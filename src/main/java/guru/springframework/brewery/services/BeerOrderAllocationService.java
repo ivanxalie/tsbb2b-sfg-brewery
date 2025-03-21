@@ -55,12 +55,12 @@ public class BeerOrderAllocationService {
 
         List<BeerOrder> newOrders = beerOrderRepository.findAllByOrderStatus(OrderStatusEnum.NEW);
 
-        if (newOrders.size() > 0 ) {
+        if (!newOrders.isEmpty()) {
 
-            log.debug("Number of orders found to allocate: " + newOrders.size());
+            log.debug("Number of orders found to allocate: {}", newOrders.size());
 
             newOrders.forEach(beerOrder -> {
-                log.debug("Allocating Order" + beerOrder.getCustomerRef());
+                log.debug("Allocating Order{}", beerOrder.getCustomerRef());
 
                 AtomicInteger totalOrdered = new AtomicInteger();
                 AtomicInteger totalAllocated = new AtomicInteger();
@@ -74,7 +74,7 @@ public class BeerOrderAllocationService {
                 });
 
                 if(totalOrdered.get() == totalAllocated.get()){
-                    log.debug("Order Completely Allocated: " + beerOrder.getCustomerRef());
+                    log.debug("Order Completely Allocated: {}", beerOrder.getCustomerRef());
                     beerOrder.setOrderStatus(OrderStatusEnum.READY);
                 }
             });

@@ -17,9 +17,8 @@
 package guru.springframework.brewery.bootstrap;
 
 import guru.springframework.brewery.domain.*;
-import guru.springframework.brewery.web.model.BeerStyleEnum;
 import guru.springframework.brewery.repositories.*;
-import guru.springframework.brewery.repositories.BreweryRepository;
+import guru.springframework.brewery.web.model.BeerStyleEnum;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -50,12 +49,12 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         loadBreweryData();
     }
 
     private void loadBreweryData() {
-        if (breweryRepository.count() == 0){
+        if (breweryRepository.count() == 0) {
             breweryRepository.save(Brewery
                     .builder()
                     .breweryName("Cage Brewing")
