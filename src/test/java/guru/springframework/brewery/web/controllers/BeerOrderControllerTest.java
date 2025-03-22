@@ -4,7 +4,6 @@ import guru.springframework.brewery.services.BeerOrderService;
 import guru.springframework.brewery.web.model.BeerOrderDto;
 import guru.springframework.brewery.web.model.BeerOrderPagedList;
 import guru.springframework.brewery.web.model.OrderStatusEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +23,6 @@ import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Slf4j
 @WebMvcTest(BeerOrderController.class)
 class BeerOrderControllerTest {
     @MockBean
