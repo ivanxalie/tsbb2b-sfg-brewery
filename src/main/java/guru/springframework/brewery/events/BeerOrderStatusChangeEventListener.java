@@ -17,17 +17,48 @@
 
 package guru.springframework.brewery.events;
 
+import guru.springframework.brewery.domain.BeerOrder;
+import guru.springframework.brewery.web.mappers.DateMapper;
+import guru.springframework.brewery.web.model.OrderStatusUpdate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Component
 public class BeerOrderStatusChangeEventListener {
+    private final RestTemplate restTemplate;
+    private final DateMapper dateMapper = new DateMapper();
+
+    public BeerOrderStatusChangeEventListener(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
 
     @Async
     @EventListener
-    public void listen(BeerOrderStatusChangeEvent event){
+    public void listen(BeerOrderStatusChangeEvent event) {
         System.out.println("I got an order status change event");
         System.out.println(event);
+
+        BeerOrder order = event.getBeerOrder();
+
+        OrderStatusUpdate update = OrderStatusUpdate.builder()
+                .id(order.getId())
+                .version(order.getVersion() != null ? order.getVersion().intValue() : null)
+                .createdDate(dateMapper.asOffsetDateTime(order.getCreatedDate()))
+                .lastModifiedDate(dateMapper.asOffsetDateTime(order.getLastModifiedDate()))
+                .orderStatus(event.getPreviousStatus().toString())
+                .customerRef(order.getCustomerRef())
+                .build();
+
+        try {
+            log.debug("Posting to callback url");
+            restTemplate.postForObject(order.getOrderStatusCallbackUrl(), update, String.class);
+        } catch (Exception e) {
+            log.error("Error preforming ");
+        }
     }
 }
